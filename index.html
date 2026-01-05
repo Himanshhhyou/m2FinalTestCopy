@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M2 Final Test Copy</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        select,
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .loader-box {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ddd;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            margin: auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .viewer {
+            display: none;
+            margin-top: 15px;
+            height: 500px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #originalPaperBtn {
+            background: #198754;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        #originalPaperBtn:hover {
+            background: #157347;
+        }
+
+
+        @media (max-width: 600px) {
+            .viewer {
+                height: 350px;
+            }
+        }
+
+        button.attention {
+            animation: pulseGlow 1.5s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.6);
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(0, 123, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card">
+            <h2>Web Design Final Test Copy</h2>
+
+            <select id="studentSelect" onchange="loadPDF()">
+                <option value="">-- Select your name --</option>
+                <option value="pdf/aman.pdf">Aman Mishra</option>
+                <option value="pdf/anjali.pdf">Anjali Patel</option>
+                <option value="pdf/arpit.pdf">Arpit Singh</option>
+                <option value="pdf/astha.pdf">Astha Gautam</option>
+                <option value="pdf/biru.pdf">Biru Singh</option>
+                <option value="pdf/dolly.pdf">Dolly Pal</option>
+                <option value="pdf/harsh.pdf">Harsh Mishra</option>
+                <option value="pdf/kashish.pdf">Kashish Mishra</option>
+                <option value="pdf/komal.pdf">Komal Tripathi</option>
+                <option value="pdf/mantasha.pdf">Mantasha</option>
+                <option value="pdf/neha.pdf">Neha Yadav</option>
+                <option value="pdf/palak.pdf">Palak Singh</option>
+                <option value="pdf/payal.pdf">Payal Mishra</option>
+                <option value="pdf/pratyush.pdf">Pratyush Singh</option>
+                <option value="pdf/preksha.pdf">Preksha</option>
+                <option value="pdf/pritu.pdf">Pritu Tiwari</option>
+                <option value="pdf/riyadubey.pdf">Riya Dubey</option>
+                <option value="pdf/riyasingh.pdf">Riya Singh</option>
+                <option value="pdf/sachin.pdf">Sachin Kashyap</option>
+                <option value="pdf/shivam.pdf">Shivam Kumar</option>
+                <option value="pdf/sonakshi.pdf">Sonakshi Tripathi</option>
+                <option value="pdf/sudhanshu.pdf">Sudhanshu Mishra</option>
+                <option value="pdf/surbhi.pdf">Surbhi</option>
+                <option value="pdf/swati.pdf">Swati Singh</option>
+                <option value="pdf/suman.pdf">Suman Maurya</option>
+                <option value="pdf/vimal.pdf">Vimal Kumar</option>
+                <option value="pdf/vineet.pdf">Vineet Singh</option>
+            </select>
+
+            <button id="downloadBtn" onclick="downloadPDF()" style="display:none;">
+                ⬇ Download Copy(PDF)
+            </button>
+
+
+
+
+            
+            <div class="loader-box" id="loader">
+                <div class="spinner"></div>
+                <p>Loading PDF…</p>
+            </div>
+
+           
+            <div class="viewer" id="viewerBox">
+                <iframe id="pdfViewer"></iframe>
+            </div>
+        </div>
+        <button id="originalPaperBtn" onclick="downloadOriginalPaper()">
+             Download Question Paper
+        </button>
+    </div>
+
+    <script>
+        let currentPDF = "";
+        function downloadOriginalPaper() {
+            window.open("original/m2-final-test.pdf", "_blank");
+        }
+
+
+
+        function loadPDF() {
+            const select = document.getElementById("studentSelect");
+            const viewer = document.getElementById("pdfViewer");
+            const viewerBox = document.getElementById("viewerBox");
+            const loader = document.getElementById("loader");
+            const btn = document.getElementById("downloadBtn");
+
+            currentPDF = select.value;
+
+            if (!currentPDF) {
+                viewer.src = "";
+                viewerBox.style.display = "none";
+                loader.style.display = "none";
+                btn.style.display = "none";
+                return;
+            }
+
+            loader.style.display = "block";
+            viewerBox.style.display = "none";
+            btn.style.display = "none";
+
+            viewer.src = currentPDF;
+
+            
+            viewer.onload = showPDF;
+
+    
+            setTimeout(showPDF, 2000);
+
+            function showPDF() {
+                loader.style.display = "none";
+                viewerBox.style.display = "block";
+                btn.style.display = "block";
+
+                btn.classList.add("attention");
+
+                setTimeout(() => {
+                    btn.classList.remove("attention");
+                }, 18000000);
+
+            }
+        }
+
+        function downloadPDF() {
+            window.open(currentPDF, "_blank");
+        }
+    </script>
+
+</body>
+
+</html>
